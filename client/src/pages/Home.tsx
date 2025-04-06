@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import BlogSection from "@/components/BlogSection";
 import CanvaAccessSection from "@/components/CanvaAccessSection";
@@ -9,24 +9,31 @@ import BannerAd from "@/components/BannerAd";
 import { ThreeScene } from "@/lib/ThreeScene";
 
 const Home: React.FC = () => {
+  const canvaSectionRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    // Initialize Three.js scene
     const scene = new ThreeScene();
     return () => {
-      // Cleanup Three.js scene
       scene.dispose();
     };
   }, []);
 
+  const scrollToCanvaSection = () => {
+    if (canvaSectionRef.current) {
+      canvaSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="text-text-light font-inter overflow-x-hidden grid-overlay min-h-screen">
-      {/* Background Blobs (Will be rendered by Three.js) */}
+    <div className="text-text-light font-inter overflow-x-hidden grid-overlay">
       <div className="relative">
-        <Header />
+        <Header onCanvaClick={scrollToCanvaSection} />
         <BannerAd position="top" />
         <BlogSection />
         <BannerAd position="middle" />
-        <CanvaAccessSection />
+        <div ref={canvaSectionRef}>
+          <CanvaAccessSection />
+        </div>
         <InternshipSection />
         <BannerAd position="bottom" />
         <ApplicationForm />
